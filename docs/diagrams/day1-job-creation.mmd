@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant UI as Client (curl/UI)
+    participant C as AnalyzeController
+    participant S as JobService
+    participant M as InMemoryStore (ConcurrentHashMap)
+
+    UI->>C: POST /api/analyze {language, code}
+    C->>C: Validate DTO (@NotBlank)
+    C->>S: createJob(language, code)
+    S->>S: generate UUID
+    S->>M: store(jobId -> AnalysisJob(PENDING))
+    M-->>S: ok
+    S-->>C: AnalysisJob
+    C-->>UI: 200 {jobId, status=PENDING}
+
+    UI->>C: GET /api/analysis/{jobId}
+    C->>S: getJob(jobId)
+    S->>M: lookup(jobId)
+    M-->>S: AnalysisJob
+    S-->>C: Optional(job)
+    C-->>UI: 200 {jobId, status=PENDING}

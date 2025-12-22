@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    participant Client as Client (curl/UI)
+    participant Controller as AnalyzeController
+    participant Service as JobService
+    participant Repo as AnalysisJobRepository (JPA)
+    participant DB as PostgreSQL
+    participant Flyway as Flyway
+
+    Note over Flyway,DB: App Startup
+    Flyway->>DB: Validate migrations (classpath:db/migration)
+    Flyway->>DB: Apply V1__init.sql
+    DB-->>Flyway: schema ready (analysis_job, analysis_finding)
+
+    Note over Client,DB: Runtime Request
+    Client->>Controller: POST /api/analyze {language, code}
+    Controller->>Controller: Validate DTO (@Valid/@NotBlank)
+    Controller->>Service: createJob(language, code)
+    Service->>Service: jobId = UUID.randomUUID()
+    Service->>Repo: save(AnalysisJobEntity(PENDING))
+    Repo->>DB: INSERT INTO analysis_job ...
+    DB-->>Repo: OK
+    Repo-->>Service: saved entity
+    Service-->>Controller: AnalysisJob(jobId, language)
+    Controller-->>Client: 200 {jobId, status=PENDING}
+
+    Client->>Controller: GET /api/analysis/{jobId}
+    Controller->>Service: getJob(jobId)
+    Service->>Repo: findById(UUID)
+    Repo->>DB: SELECT ... FROM analysis_job WHERE id=...
+    DB-->>Repo: row
+    Repo-->>Service: entity
+    Service-->>Controller: status=PENDING
+    Controller-->>Client: 200 {jobId, status=PENDING}
