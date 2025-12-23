@@ -1,5 +1,5 @@
-package com.revix.persistance.repo;
-import com.revix.persistance.entity.AnalysisFindingEntity;
+package com.revix.persistence.repo;
+import com.revix.persistence.entity.AnalysisFindingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

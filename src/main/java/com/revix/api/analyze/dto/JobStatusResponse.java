@@ -4,5 +4,6 @@ public record JobStatusResponse(
         String jobId,
         String status,
         String summary,
-        String errorMessage
+        String errorMessage,
+        java.util.List<FindingResponse> findings
 ) {}

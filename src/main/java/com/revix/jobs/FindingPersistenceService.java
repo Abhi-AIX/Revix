@@ -1,6 +1,6 @@
 package com.revix.jobs;
-import com.revix.persistance.entity.AnalysisFindingEntity;
-import com.revix.persistance.repo.AnalysisFindingRepository;
+import com.revix.persistence.entity.AnalysisFindingEntity;
+import com.revix.persistence.repo.AnalysisFindingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

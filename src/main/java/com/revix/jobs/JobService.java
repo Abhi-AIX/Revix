@@ -1,8 +1,8 @@
 package com.revix.jobs;
 
 import com.revix.jobs.model.AnalysisJob;
-import com.revix.persistance.entity.AnalysisJobEntity;
-import com.revix.persistance.repo.AnalysisJobRepository;
+import com.revix.persistence.entity.AnalysisJobEntity;
+import com.revix.persistence.repo.AnalysisJobRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

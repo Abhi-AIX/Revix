@@ -1,4 +1,4 @@
-package com.revix.persistance.entity;
+package com.revix.persistence.entity;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
