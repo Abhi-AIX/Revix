@@ -47,8 +47,16 @@ public class JobService {
 
         return repo.findById(id)
                 .map(entity -> {
-                    AnalysisJob job = new AnalysisJob(entity.getId().toString(), entity.getLanguage(), "");
+                    AnalysisJob job = new AnalysisJob(
+                            entity.getId().toString(),
+                            entity.getLanguage(),
+                            ""
+                    );
+
                     job.setStatus(JobStatus.valueOf(entity.getStatus()));
+                    job.setSummary(entity.getSummary());
+                    job.setErrorMessage(entity.getErrorMessage());
+
                     return job;
                 });
     }

@@ -8,6 +8,8 @@ public class AnalysisJob {
     private final String language;
     private final String code;
     private final Instant createdAt;
+    private String summary;
+    private String errorMessage;
     private JobStatus status;
 
     public AnalysisJob(String id, String language, String code) {
@@ -40,6 +42,22 @@ public class AnalysisJob {
 
     public void setStatus(JobStatus status) {
         this.status = status;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 }

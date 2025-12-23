@@ -29,8 +29,17 @@ public class AnalyzeController {
     @GetMapping("/analysis/{jobId}")
     public JobStatusResponse getStatus(@PathVariable String jobId) {
         AnalysisJob job = jobService.getJob(jobId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
-        return new JobStatusResponse(job.getId(), job.getStatus().name());
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found")
+                );
+
+        return new JobStatusResponse(
+                job.getId(),
+                job.getStatus().name(),
+                job.getSummary(),
+                job.getErrorMessage()
+        );
     }
+
 
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class AnalysisWorker {
 
     private final JobPersistenceService persistence;
@@ -19,7 +20,7 @@ public class AnalysisWorker {
             persistence.markRunning(jobId);
 
             // simulate analysis (later: OpenAI call)
-            Thread.sleep(2000);
+            Thread.sleep(5000);
 
             String summary = "Simulated analysis: language=" + language
                     + ", codeLength=" + (code == null ? 0 : code.length());

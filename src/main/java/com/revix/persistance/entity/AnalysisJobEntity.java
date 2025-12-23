@@ -52,6 +52,8 @@ public class AnalysisJobEntity {
     public String getStatus() { return status; }
     public String getLanguage() { return language; }
     public Instant getCreatedAt() { return createdAt; }
+    public String getSummary() { return summary; }
+    public String getErrorMessage() { return errorMessage; }
 
     public void setStatus(String status) { this.status = status; }
     public void setSummary(String summary) { this.summary = summary; }
