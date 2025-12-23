@@ -1,0 +1,7 @@
+stateDiagram-v2
+    [*] --> PENDING: POST /api/analyze\n(job row created)
+    PENDING --> RUNNING: Worker starts\n(started_at set)
+    RUNNING --> DONE: Findings saved + summary saved\n(finished_at set)
+    RUNNING --> FAILED: error_message saved\n(finished_at set)
+    DONE --> [*]
+    FAILED --> [*]

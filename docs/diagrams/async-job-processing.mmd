@@ -1,0 +1,55 @@
+sequenceDiagram
+    autonumber
+    participant Client as Client (curl/UI)
+    participant Controller as AnalyzeController
+    participant JobSvc as JobService
+    participant JobRepo as AnalysisJobRepository (JPA)
+    participant DB as PostgreSQL
+    participant Worker as AnalysisWorker (@Async)
+    participant JobPersist as JobPersistenceService
+    participant FindPersist as FindingPersistenceService
+    participant FindRepo as AnalysisFindingRepository (JPA)
+
+%% --- Create job (fast response) ---
+    Client->>Controller: POST /api/analyze {language, code}
+    Controller->>JobSvc: createJob(language, code)
+    JobSvc->>JobRepo: save(AnalysisJobEntity: PENDING, created_at)
+    JobRepo->>DB: INSERT analysis_job (PENDING)
+    DB-->>JobRepo: OK
+    JobRepo-->>JobSvc: saved
+    JobSvc->>Worker: process(jobId, language, code)  %% async trigger
+    JobSvc-->>Controller: jobId + PENDING
+    Controller-->>Client: 200 {jobId, status:PENDING}
+
+%% --- Background worker (async) ---
+    Note over Worker,DB: Runs in background thread
+    Worker->>JobPersist: markRunning(jobId)
+    JobPersist->>JobRepo: findById(jobId) + update RUNNING, started_at
+    JobRepo->>DB: UPDATE analysis_job SET status=RUNNING, started_at=...
+    DB-->>JobRepo: OK
+
+    Worker->>Worker: simulate analysis (sleep) / later OpenAI
+    Worker->>FindPersist: saveAll(findings for jobId)
+    FindPersist->>FindRepo: saveAll(List<AnalysisFindingEntity>)
+    FindRepo->>DB: INSERT analysis_finding (2+ rows)
+    DB-->>FindRepo: OK
+
+    Worker->>JobPersist: markDone(jobId, summary)
+    JobPersist->>JobRepo: findById(jobId) + update DONE, summary, finished_at
+    JobRepo->>DB: UPDATE analysis_job SET status=DONE, summary=..., finished_at=...
+    DB-->>JobRepo: OK
+
+%% --- Read status + results ---
+    Client->>Controller: GET /api/analysis/{jobId}
+    Controller->>JobSvc: getJob(jobId)
+    JobSvc->>JobRepo: findById(jobId)
+    JobRepo->>DB: SELECT * FROM analysis_job WHERE id=jobId
+    DB-->>JobRepo: row (DONE + summary)
+    JobRepo-->>JobSvc: entity
+
+    Controller->>FindRepo: findByJobId(jobId)
+    FindRepo->>DB: SELECT * FROM analysis_finding WHERE job_id=jobId
+    DB-->>FindRepo: rows (findings)
+    FindRepo-->>Controller: findings list
+
+    Controller-->>Client: 200 {jobId,status,summary,errorMessage,findings[]}
