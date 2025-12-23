@@ -13,9 +13,11 @@ import java.util.UUID;
 public class JobService {
 
     private final AnalysisJobRepository repo;
+    private final AnalysisWorker worker;
 
-    public JobService(AnalysisJobRepository repo) {
+    public JobService(AnalysisJobRepository repo, AnalysisWorker worker) {
         this.repo = repo;
+        this.worker = worker;
     }
 
     public AnalysisJob createJob(String language, String code) {
@@ -30,9 +32,8 @@ public class JobService {
         );
 
         repo.save(entity);
+        worker.process(id, language, code);
 
-        // We still return our domain model for now (contains code).
-        // Later we will store the code safely and/or store only diff.
         return new AnalysisJob(id.toString(), language, code);
     }
 
