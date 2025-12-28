@@ -1,6 +1,6 @@
 package com.revix.jobs;
 
-import com.revix.persistence.repo.AnalysisFindingRepository;
+import com.revix.persistance.repo.AnalysisFindingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ public class FindingQueryService {
         this.repo = repo;
     }
 
-    public java.util.List<com.revix.persistence.entity.AnalysisFindingEntity> findByJobId(UUID jobId) {
+    public java.util.List<com.revix.persistance.entity.AnalysisFindingEntity> findByJobId(UUID jobId) {
         return repo.findByJobId(jobId);
     }
 }

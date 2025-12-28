@@ -22,7 +22,8 @@ public class JavaCodeAnalyzer implements CodeAnalyzer {
 
         var rules = java.util.List.of(
                 new com.revix.analyzer.rules.EmptyClassRule(),
-                new com.revix.analyzer.rules.WeakClassNameRule()
+                new com.revix.analyzer.rules.WeakClassNameRule(),
+                new com.revix.analyzer.rules.TodoCommentRule()
         );
 
         return rules.stream()
