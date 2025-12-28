@@ -20,7 +20,15 @@ public class JavaCodeAnalyzer implements CodeAnalyzer {
             ));
         }
 
-        // Step 2 will add real rules here
-        return List.of();
+        var rules = java.util.List.of(
+                new com.revix.analyzer.rules.EmptyClassRule(),
+                new com.revix.analyzer.rules.WeakClassNameRule()
+        );
+
+        return rules.stream()
+                .map(r -> r.apply(code))
+                .flatMap(java.util.Optional::stream)
+                .toList();
+
     }
 }
