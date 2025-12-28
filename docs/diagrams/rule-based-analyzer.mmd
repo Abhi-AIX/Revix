@@ -1,0 +1,30 @@
+
+sequenceDiagram
+    participant Client
+    participant API as AnalyzeController
+    participant JobSvc as JobService
+    participant DB as PostgreSQL
+    participant Worker as AnalysisWorker
+    participant Analyzer as CodeAnalyzer
+    participant Rules as Rule Engine
+
+    Client->>API: POST /api/analyze (code)
+    API->>JobSvc: createJob()
+    JobSvc->>DB: insert analysis_job (PENDING)
+    API-->>Client: jobId
+
+    Worker->>DB: fetch PENDING job
+    Worker->>Analyzer: analyze(language, code)
+
+    Analyzer->>Rules: EmptyClassRule
+    Analyzer->>Rules: WeakClassNameRule
+    Analyzer->>Rules: TodoCommentRule
+    Rules-->>Analyzer: findings list
+
+    Analyzer-->>Worker: AnalysisResult
+    Worker->>DB: update job (DONE, summary)
+    Worker->>DB: insert analysis_findings
+
+    Client->>API: GET /api/analysis/{jobId}
+    API->>DB: fetch job + findings
+    API-->>Client: status + findings
