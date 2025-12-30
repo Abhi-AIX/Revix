@@ -3,5 +3,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public record AnalyzeRequest(
         @NotBlank String language,
-        @NotBlank String code
+        @NotBlank String code,
+        String analyzerType
 ) {}

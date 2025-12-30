@@ -1,4 +1,4 @@
-package com.revix.persistance.entity;
+package com.revix.persistence.entity;
 
 
 import jakarta.persistence.*;
@@ -66,9 +66,11 @@ public class AnalysisFindingEntity {
     public Integer getLineStart() { return lineStart; }
     public Integer getLineEnd() { return lineEnd; }
 
+
     public void setSuggestion(String suggestion) { this.suggestion = suggestion; }
     public void setConfidence(BigDecimal confidence) { this.confidence = confidence; }
     public void setFilePath(String filePath) { this.filePath = filePath; }
     public void setLineStart(Integer lineStart) { this.lineStart = lineStart; }
     public void setLineEnd(Integer lineEnd) { this.lineEnd = lineEnd; }
+
 }

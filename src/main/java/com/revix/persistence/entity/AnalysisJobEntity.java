@@ -1,4 +1,4 @@
-package com.revix.persistance.entity;
+package com.revix.persistence.entity;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
@@ -35,6 +35,12 @@ public class AnalysisJobEntity {
     @Column(name = "finished_at")
     private Instant finishedAt;
 
+    @Column(name = "analyzer_type", nullable = false)
+    private String analyzerType = "RULES";
+
+    @Column(name = "analyzer_version", nullable = false)
+    private String analyzerVersion = "rules-v1";
+
     protected AnalysisJobEntity() {
         // JPA
     }
@@ -45,6 +51,8 @@ public class AnalysisJobEntity {
         this.status = status;
         this.language = language;
         this.createdAt = createdAt;
+        this.analyzerType = "RULES";
+        this.analyzerVersion = "rules-v1";
     }
 
     public UUID getId() { return id; }
@@ -54,11 +62,15 @@ public class AnalysisJobEntity {
     public Instant getCreatedAt() { return createdAt; }
     public String getSummary() { return summary; }
     public String getErrorMessage() { return errorMessage; }
+    public String getAnalyzerType() { return analyzerType; }
+    public String getAnalyzerVersion() { return analyzerVersion; }
 
     public void setStatus(String status) { this.status = status; }
     public void setSummary(String summary) { this.summary = summary; }
     public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
     public void setStartedAt(Instant startedAt) { this.startedAt = startedAt; }
     public void setFinishedAt(Instant finishedAt) { this.finishedAt = finishedAt; }
+    public void setAnalyzerType(String analyzerType) { this.analyzerType = analyzerType; }
+    public void setAnalyzerVersion(String analyzerVersion) { this.analyzerVersion = analyzerVersion; }
 }
 

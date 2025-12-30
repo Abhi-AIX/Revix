@@ -1,0 +1,3 @@
+ALTER TABLE analysis_job
+ADD COLUMN analyzer_type VARCHAR(20) NOT NULL DEFAULT 'RULES',
+ADD COLUMN analyzer_version VARCHAR(50) NOT NULL DEFAULT 'rules-v1';

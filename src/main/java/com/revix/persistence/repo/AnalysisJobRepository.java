@@ -1,6 +1,6 @@
-package com.revix.persistance.repo;
+package com.revix.persistence.repo;
 
-import com.revix.persistance.entity.AnalysisJobEntity;
+import com.revix.persistence.entity.AnalysisJobEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

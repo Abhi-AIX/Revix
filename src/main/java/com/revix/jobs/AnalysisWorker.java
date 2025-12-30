@@ -1,5 +1,6 @@
 package com.revix.jobs;
 
+import com.revix.analyzer.AnalyzerRouter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.revix.analyzer.CodeAnalyzer;
@@ -12,24 +13,28 @@ public class AnalysisWorker {
     private final JobPersistenceService persistence;
     private final FindingPersistenceService findingPersistence;
     private final CodeAnalyzer analyzer;
+    private final AnalyzerRouter analyzerRouter;
+
 
 
     public AnalysisWorker(JobPersistenceService persistence,
                           FindingPersistenceService findingPersistence,
-                          CodeAnalyzer analyzer) {
+                          CodeAnalyzer analyzer,
+                          AnalyzerRouter analyzerRouter) {
         this.persistence = persistence;
         this.findingPersistence = findingPersistence;
         this.analyzer = analyzer;
-    }
+        this.analyzerRouter  = analyzerRouter; }
 
     @Async
-    public void process(UUID jobId, String language, String code) {
+    public void process(UUID jobId, String language, String code, String analyzerType) {
         try {
             persistence.markRunning(jobId);
 
             // simulate analysis (later: OpenAI call)
             Thread.sleep(5000);
 
+            var analyzer = analyzerRouter.route(analyzerType);
             var analyzerFindings = analyzer.analyze(language, code);
 
             var entities = analyzerFindings.stream()
@@ -48,7 +53,7 @@ public class AnalysisWorker {
 
             findingPersistence.saveAll(entities);
 
-            String summary = "Rules-based analysis complete. Findings=" + analyzerFindings.size();
+            String summary = "Analysis complete using " + analyzerType + ". Findings=" + analyzerFindings.size();
 
             persistence.markDone(jobId, summary);
         } catch (Exception e) {

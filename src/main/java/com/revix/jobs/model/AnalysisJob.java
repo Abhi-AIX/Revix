@@ -1,4 +1,5 @@
 package com.revix.jobs.model;
+import com.revix.analyzer.AnalyzerType;
 import com.revix.jobs.JobStatus;
 import java.time.Instant;
 
@@ -11,6 +12,11 @@ public class AnalysisJob {
     private String summary;
     private String errorMessage;
     private JobStatus status;
+    private AnalyzerType analyzerType;
+    private String analyzerVersion;
+
+
+
 
     public AnalysisJob(String id, String language, String code) {
         this.id = id;
@@ -59,5 +65,24 @@ public class AnalysisJob {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    public AnalyzerType getAnalyzerType() {
+        return analyzerType;
+    }
+
+    public void setAnalyzerType(AnalyzerType analyzerType) {
+        this.analyzerType = analyzerType;
+    }
+
+    public String getAnalyzerVersion() {
+        return analyzerVersion;
+    }
+
+    public void setAnalyzerVersion(String analyzerVersion) {
+        this.analyzerVersion = analyzerVersion;
+    }
+
+
+
 
 }

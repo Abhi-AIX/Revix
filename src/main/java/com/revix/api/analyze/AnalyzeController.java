@@ -7,6 +7,7 @@ import com.revix.api.analyze.dto.JobStatusResponse;
 import com.revix.jobs.FindingQueryService;
 import com.revix.jobs.JobService;
 import com.revix.jobs.model.AnalysisJob;
+import com.revix.persistence.entity.AnalysisJobEntity;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,13 @@ public class AnalyzeController {
 
     @PostMapping("/analyze")
     public AnalyzeJobCreatedResponse analyze(@Valid @RequestBody AnalyzeRequest request) {
-        AnalysisJob job = jobService.createJob(request.language(), request.code());
+        AnalysisJob job = jobService.createJob(request.language(), request.code(), request.analyzerType());
         return new AnalyzeJobCreatedResponse(job.getId(), job.getStatus().name());
     }
 
     @GetMapping("/analysis/{jobId}")
     public JobStatusResponse getStatus(@PathVariable String jobId) {
+
         AnalysisJob job = jobService.getJob(jobId)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found")
@@ -52,10 +54,11 @@ public class AnalyzeController {
                 ))
                 .toList();
 
-
         return new JobStatusResponse(
                 job.getId(),
                 job.getStatus().name(),
+                job.getAnalyzerType() == null ? null : job.getAnalyzerType().name(),
+                job.getAnalyzerVersion(),
                 job.getSummary(),
                 job.getErrorMessage(),
                 findings

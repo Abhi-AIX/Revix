@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant Client
+    participant API as AnalyzeController
+    participant JobSvc as JobService
+    participant DB as PostgreSQL
+    participant Worker as AnalysisWorker
+    participant Router as AnalyzerRouter
+    participant Analyzer as CodeAnalyzer(RULES)
+
+    Client->>API: POST /api/analyze (language, code, analyzerType?)
+    API->>JobSvc: createJob(language, code, analyzerTypeRaw)
+    JobSvc->>JobSvc: normalize analyzerType (default RULES)
+    JobSvc->>JobSvc: compute analyzerVersion (rules-v1)
+    JobSvc->>DB: INSERT analysis_job (PENDING, analyzer_type, analyzer_version)
+    API-->>Client: {jobId, status=PENDING}
+
+    Worker->>DB: load job & mark STARTED
+    Worker->>Router: route(analyzerType)
+    Router-->>Worker: CodeAnalyzer implementation
+    Worker->>Analyzer: analyze(language, code)
+    Analyzer-->>Worker: findings + summary
+    Worker->>DB: UPDATE analysis_job (DONE, summary)
+    Worker->>DB: INSERT analysis_finding rows
+
+    Client->>API: GET /api/analysis/{jobId}
+    API->>JobSvc: getJob(jobId)
+    JobSvc->>DB: SELECT analysis_job
+    JobSvc-->>API: AnalysisJob(domain) + analyzerType/version
+    API->>DB: SELECT findings by jobId
+    API-->>Client: status + analyzerType/version + findings
