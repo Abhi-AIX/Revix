@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/revix
-    username: revix
-    password: revix
+    username: ${DB_USER:revix}
+    password: ${DB_PASSWORD:revix}
 
   jpa:
     hibernate:
